@@ -1,0 +1,137 @@
+/* --- LAYOUT & BRANDING --- */
+/* Uses Flexbox to ensure the footer stays at the bottom regardless of page content height */
+body {
+    background-color: #f4f7f6;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    margin: 0;
+}
+
+main {
+    flex: 1; /* Pushes the footer down by taking up all available space */
+}
+
+.navbar {
+    background: white;
+    border-bottom: 2px solid #e9ecef;
+    padding: 0.8rem 1rem;
+}
+
+.navbar-brand {
+    font-weight: 900;
+    color: #0d6efd !important;
+    font-size: 1.4rem;
+    text-decoration: none;
+    letter-spacing: 0.5px;
+}
+
+footer {
+    background: white;
+    border-top: 1px solid #dee2e6;
+    padding: 1rem 0;
+}
+
+/* --- GLOBAL UTILITIES --- */
+/* Forces text to stay uppercase even if the user types in lowercase */
+.text-uppercase-forced {
+    text-transform: uppercase !important;
+}
+
+.text-data-bold {
+    color: #000000 !important;
+    font-weight: 700 !important;
+    text-transform: uppercase;
+}
+
+.rounded-4 {
+    border-radius: 1rem !important;
+}
+
+/* --- CARDS & FORMS --- */
+.card {
+    background: white;
+    border: none;
+    border-radius: 1rem;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08); /* Adds depth without being distracting */
+}
+
+/* Logic: Ensures placeholder text is visually distinct from actual user input */
+.form-control::placeholder {
+    color: #a0a0a0 !important;
+    font-weight: 400 !important;
+    text-transform: none !important;
+    font-size: 0.85rem;
+}
+
+.form-control:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.25rem rgba(13,110, 253, 0.15); /* Soft blue glow for accessibility */
+    background-color: #fff;
+}
+
+/* --- ATTENDANCE COMPONENTS --- */
+/* Sticky Header: Crucial for usability. Titles stay visible when scrolling long lists. */
+.table thead th {
+    background-color: #f8f9fa !important;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.5px;
+    color: #6c757d;
+    padding: 12px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    border-bottom: 2px solid #dee2e6;
+}
+
+/* --- STATUS BADGE COLORS --- */
+/* We override Bootstrap defaults to ensure the colors are high-contrast and readable */
+.bg-success {
+    background-color: #198754 !important; /* Emerald Green */
+}
+
+.bg-warning {
+    background-color: #ffc107 !important; /* Amber */
+    color: #212529 !important;
+}
+
+.bg-danger {
+    background-color: #dc3545 !important; /* Crimson Red */
+}
+
+.badge {
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 8px 12px;
+    border-radius: 50px; /* Fully rounded "pill" design */
+}
+
+/* --- CUSTOM SCROLLBAR --- */
+/* Custom scrollbar styling matches the Portal's primary blue theme */
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #0d6efd;
+    border-radius: 10px;
+}
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: #0a58ca;
+    }
+
+/* --- TABLE ROW HOVER --- */
+/* Provides visual feedback when the instructor points at a specific student */
+.table-hover tbody tr:hover {
+    background-color: rgba(13, 110, 253, 0.04);
+    transition: background-color 0.2s ease;
+}

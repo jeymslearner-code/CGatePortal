@@ -1,0 +1,71 @@
+﻿@{
+    Layout = "_Layout";
+}
+
+@* LOGIN CONTAINER: Uses Flexbox (d-flex) to center the login card perfectly in the middle of the screen *@
+<div class="container d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+    <div class="card border-0 shadow-sm p-4 rounded-4" style="width: 100%; max-width: 400px;">
+        
+        @* BRANDING SECTION: Uses Bootstrap Icons (bi-shield-lock) to signal a secure portal *@
+        <div class="text-center mb-4">
+            <i class="bi bi-shield-lock-fill text-primary display-4"></i>
+            <h4 class="fw-bold mt-2 text-uppercase">Instructor Login</h4>
+            <p class="text-muted small text-uppercase">C-Gate Portal Access</p>
+        </div>
+
+        @* ERROR HANDLING: If the Controller sends a ViewBag.Error, it displays a shaking alert (animate__shakeX) *@
+        @if (ViewBag.Error != null)
+        {
+            <div class="alert alert-danger py-2 small text-center border-0 animate__animated animate__shakeX">
+                <i class="bi bi-exclamation-circle me-1"></i> @ViewBag.Error
+            </div>
+        }
+
+        @* SUCCESS FEEDBACK: Displays messages like "Registration Successful" using TempData *@
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success py-2 small text-center border-0 animate__animated animate__fadeIn">
+                <i class="bi bi-check-circle me-1"></i> @TempData["Success"]
+            </div>
+        }
+
+        @* LOGIN FORM: Sends the 'username' and 'password' to the Login POST method in the Controller *@
+        <form asp-action="Login" method="post">
+            <div class="mb-3">
+                <label class="small fw-bold text-muted mb-1 text-uppercase">Username</label>
+                <div class="input-group shadow-sm rounded-3">
+                    <span class="input-group-text bg-white border-0">
+                        <i class="bi bi-person text-primary"></i>
+                    </span>
+                    @* autocomplete="off" is used as a basic security measure to prevent browsers from suggesting old names *@
+                    <input type="text" name="username" class="form-control fw-bold border-0 bg-white"
+                           placeholder="ENTER YOUR USERNAME" required autocomplete="off" />
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <label class="small fw-bold text-muted mb-1 text-uppercase">Password</label>
+                <div class="input-group shadow-sm rounded-3">
+                    <span class="input-group-text bg-white border-0">
+                        <i class="bi bi-key text-primary"></i>
+                    </span>
+                    <input type="password" name="password" class="form-control fw-bold border-0 bg-white"
+                           placeholder="ENTER YOUR PASSWORD" required />
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100 py-3 fw-bold rounded-3 shadow-sm text-uppercase">
+                <i class="bi bi-door-open-fill me-2"></i>Open Portal
+            </button>
+        </form>
+
+        @* FOOTER LINKS: Navigation to the Registration page and department branding *@
+        <div class="text-center mt-4 border-top pt-3">
+            <span class="small text-muted">
+                Don't have an account?
+                <a asp-action="Register" class="text-decoration-none fw-bold text-primary text-uppercase">Register</a>
+            </span>
+            <div class="mt-2 small text-muted fw-bold">CEC IT DEPARTMENT</div>
+        </div>
+    </div>
+</div>

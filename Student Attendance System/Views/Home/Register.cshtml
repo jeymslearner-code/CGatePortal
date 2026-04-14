@@ -1,0 +1,74 @@
+﻿@{
+    Layout = "_Layout";
+}
+
+@* REGISTRATION CONTAINER: Perfect centering using Flexbox *@
+<div class="container d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+    <div class="card border-0 shadow-sm p-4 rounded-4" style="width: 100%; max-width: 400px;">
+        
+        @* BRANDING: Using green (text-success) to represent the "Create Account" action *@
+        <div class="text-center mb-4">
+            <i class="bi bi-person-plus-fill text-success" style="font-size: 3rem;"></i>
+            <h4 class="fw-bold mt-2 text-uppercase">Instructor Registration</h4>
+            <p class="text-muted small text-uppercase">C-Gate Portal Access</p>
+        </div>
+
+        @* BLOCKING LOGIC: This displays the "NOT AVAILABLE" message sent from the Controller *@
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger py-3 small text-center border-0 fw-bold animate__animated animate__headShake mb-4">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i> @TempData["Error"]
+            </div>
+        }
+
+        @* FORM: Sends data to the Register POST method in the HomeController *@
+        <form asp-action="Register" method="post">
+            <div class="mb-3">
+                <label class="small fw-bold text-muted mb-1 text-uppercase">Username</label>
+                <div class="input-group shadow-sm rounded-3">
+                    <span class="input-group-text bg-white border-0">
+                        <i class="bi bi-person text-success"></i>
+                    </span>
+                    <input type="text" name="username" class="form-control fw-bold border-0 bg-white"
+                           placeholder="DESIRED USERNAME" required autocomplete="off" />
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label class="small fw-bold text-muted mb-1 text-uppercase">Password</label>
+                <div class="input-group shadow-sm rounded-3">
+                    <span class="input-group-text bg-white border-0">
+                        <i class="bi bi-key text-success"></i>
+                    </span>
+                    <input type="password" name="password" class="form-control fw-bold border-0 bg-white"
+                           placeholder="DESIRED PASSWORD" required />
+                </div>
+            </div>
+
+            @* EXTENDED DATA: Unlike Login, we ask for the Subject and Instructor Name here *@
+            <div class="mb-4">
+                <label class="small fw-bold text-muted mb-1 text-uppercase">Assigned Subject & Name</label>
+                <div class="input-group shadow-sm rounded-3">
+                    <span class="input-group-text bg-white border-0">
+                        <i class="bi bi-book text-success"></i>
+                    </span>
+                    <input type="text" name="subject" class="form-control fw-bold border-0 bg-white text-uppercase"
+                           placeholder="e.g. IT WST12 - SIR ARJAY ALANGCAS" required />
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-success w-100 py-3 fw-bold rounded-3 shadow-sm text-uppercase">
+                <i class="bi bi-check-circle-fill me-2"></i>Register Account
+            </button>
+        </form>
+
+        @* REDIRECT: Navigation back to the Login page *@
+        <div class="text-center mt-4 border-top pt-3">
+            <span class="small text-muted">
+                Already have an account?
+                <a asp-action="Login" class="text-decoration-none fw-bold text-success text-uppercase">Login Here</a>
+            </span>
+            <div class="mt-2 small text-muted fw-bold">CEC IT DEPARTMENT</div>
+        </div>
+    </div>
+</div>

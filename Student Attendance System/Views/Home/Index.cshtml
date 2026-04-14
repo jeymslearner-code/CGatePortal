@@ -1,0 +1,214 @@
+﻿@model IEnumerable<dynamic>
+
+@{
+    Layout = "_Layout";
+}
+
+@* REFRESH LOGIC: If a message (Success/Error) appears, the page auto-refreshes after 5 seconds *@
+@if (TempData["Success"] != null || TempData["Error"] != null)
+{
+    <meta http-equiv="refresh" content="5;url=@Url.Action("Index")" />
+}
+
+<div class="container-fluid py-3">
+    
+    @* HEADER SECTION: Displays current subject and administrative controls *@
+    <div class="d-flex justify-content-between align-items-center mb-4 bg-white p-3 shadow-sm rounded-3 border-start border-primary border-4">
+        <div>
+            <h6 class="text-muted mb-0 small fw-bold text-uppercase">Instructor Portal</h6>
+            <h5 class="fw-bold text-dark mb-0 text-uppercase-forced">@ViewBag.CurrentSubject</h5>
+        </div>
+        <div class="text-end d-flex align-items-center gap-2">
+            @* Trigger buttons for Modals (Pop-up windows) *@
+            <button type="button" class="btn btn-sm btn-outline-primary fw-bold rounded-pill px-4 shadow-sm" data-bs-toggle="modal" data-bs-target="#addStudentModal">
+                <i class="bi bi-person-plus-fill me-1"></i> ADD STUDENT
+            </button>
+            <button type="button" class="btn btn-sm btn-danger fw-bold rounded-pill px-4 shadow-sm" data-bs-toggle="modal" data-bs-target="#resetModal">
+                <i class="bi bi-trash3-fill me-1"></i> RESET DATA
+            </button>
+            <a asp-action="Logout" class="btn btn-sm btn-outline-danger fw-bold rounded-pill px-4 shadow-sm">
+                <i class="bi bi-power me-1"></i> END SESSION
+            </a>
+        </div>
+    </div>
+
+    @* NOTIFICATION SYSTEM: Displays feedback from the Controller (TempData) *@
+    @if (TempData["Success"] != null || TempData["Error"] != null)
+    {
+        <div class="alert @(TempData["Success"] != null ? "alert-success" : "alert-danger") border-0 shadow-sm text-center py-2 mb-4 animate__animated animate__fadeInDown">
+            <span class="fw-bold">
+                <i class="bi @(TempData["Success"] != null ? "bi-check-circle" : "bi-exclamation-triangle")"></i>
+                @(TempData["Success"] ?? TempData["Error"])
+            </span>
+        </div>
+    }
+
+    <div class="row g-4">
+        @* LEFT COLUMN: THE STUDENT CHECK-IN INTERFACE *@
+        <div class="col-md-5">
+            <div class="card border-0 shadow-sm p-4 rounded-4">
+                <h6 class="fw-bold text-secondary mb-4 text-uppercase small">Student Check-In</h6>
+                <form asp-action="CheckIn" method="post">
+                    <div class="mb-3">
+                        <label class="small fw-bold text-muted mb-2 text-uppercase">Full Name (FIRST NAME LAST NAME)</label>
+                        @* Note: 'autofocus' ensures the cursor is ready as soon as the page loads *@
+                        <input type="text" name="studentFullName" class="form-control form-control-lg fw-bold text-center text-uppercase-forced input-custom"
+                               placeholder="ENTER YOUR FULL NAME"
+                               autofocus required autocomplete="off">
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100 py-3 fw-bold shadow-sm btn-submit">
+                        SUBMIT ATTENDANCE
+                    </button>
+                </form>
+
+                @* SESSION INFO: Displays schedule rules to the students *@
+                <div class="mt-4">
+                    <p class="small text-muted mb-2 fw-bold text-uppercase border-bottom pb-1">Session Status</p>
+                    <div class="d-flex justify-content-between small mb-2">
+                        <span>Class Section:</span> <span class="fw-bold text-dark">@ViewBag.CurrentSection</span>
+                    </div>
+                    <div class="d-flex justify-content-between small mb-3">
+                        <span>Class Schedule:</span> <span class="fw-bold text-dark">03:00 PM - 04:30 PM</span>
+                    </div>
+                    
+                    <div class="p-3 bg-light rounded-3 border-start border-info border-3">
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-info-circle-fill me-2 text-primary"></i>
+                            <span class="small fw-bold text-dark">
+                                Check-in: 3:00 PM – 3:15 PM (PRESENT), 3:15 PM – 4:30 PM (LATE).
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @* RIGHT COLUMN: THE LIVE DASHBOARD *@
+        <div class="col-md-7">
+            <div class="card border-0 shadow-sm p-4 rounded-4 h-100">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h6 class="fw-bold text-secondary mb-0 text-uppercase small">Class Master List</h6>
+                    <span class="badge bg-dark rounded-pill px-3">@Model.Count() TOTAL STUDENTS</span>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead class="bg-light sticky-top">
+                            <tr class="text-muted small">
+                                <th class="border-0">STUDENT NAME</th>
+                                <th class="text-center border-0">STATUS</th>
+                                <th class="text-center border-0">TIME RECORDED</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @* LOOP: Dynamically builds the table rows from the database model *@
+                            @foreach (var log in Model)
+                            {
+                                <tr class="animate__animated animate__fadeIn">
+                                    <td class="fw-bold py-3 text-uppercase-forced student-name">@log.FullName</td>
+                                    <td class="text-center">
+                                        @* DYNAMIC STYLING: Badge color changes based on the student's status *@
+                                        @if (log.Status == "PRESENT")
+                                        {
+                                            <span class="badge bg-success badge-status shadow-sm">
+                                                <i class="bi bi-check-circle-fill me-1"></i> PRESENT
+                                            </span>
+                                        }
+                                        else if (log.Status == "LATE")
+                                        {
+                                            <span class="badge bg-warning text-dark badge-status shadow-sm">
+                                                <i class="bi bi-clock-fill me-1"></i> LATE
+                                            </span>
+                                        }
+                                        else if (log.Status == "ABSENT")
+                                        {
+                                            <span class="badge bg-danger badge-status shadow-sm">
+                                                <i class="bi bi-x-circle-fill me-1"></i> ABSENT
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-light text-muted border badge-status">
+                                                <i class="bi bi-dash-lg"></i>
+                                            </span>
+                                        }
+                                    </td>
+                                    <td class="text-center text-muted small">
+                                        @if (log.TimeIn != null)
+                                        {
+                                            <i class="bi bi-clock me-1"></i>
+                                            @log.TimeIn.ToString("hh:mm tt")
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted opacity-50">--:-- --</span>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* ADMIN MODALS: Pop-up forms for protected actions *@
+@* ADD STUDENT MODAL *@
+<div class="modal fade" id="addStudentModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header bg-primary text-white border-0">
+                <h5 class="modal-title fw-bold text-uppercase small">Add Student to Master List</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form asp-action="AddToMasterList" method="post">
+                <div class="modal-body p-4">
+                    <div class="mb-3">
+                        <label class="small fw-bold text-muted text-uppercase mb-2">Student Full Name</label>
+                        <input type="text" name="fullName" class="form-control fw-bold" placeholder="FIRST NAME LAST NAME" required>
+                    </div>
+                    <div class="mb-0">
+                        <label class="small fw-bold text-muted text-uppercase mb-2">Confirm Admin Password</label>
+                        <input type="password" name="confirmPassword" class="form-control" placeholder="ENTER PASSWORD TO AUTHORIZE" required>
+                    </div>
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-light fw-bold text-uppercase small" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary fw-bold text-uppercase small px-4">Save Student</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@* RESET DATA MODAL *@
+<div class="modal fade" id="resetModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header bg-danger text-white border-0">
+                <h5 class="modal-title fw-bold text-uppercase small">Reset Daily Attendance</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form asp-action="ResetAttendance" method="post">
+                <div class="modal-body p-4 text-center">
+                    <i class="bi bi-exclamation-triangle-fill text-danger display-4 mb-3"></i>
+                    <p class="fw-bold text-dark">Are you sure you want to clear all attendance logs for today?</p>
+                    <p class="small text-muted mb-4">This action cannot be undone.</p>
+                    <input type="password" name="confirmPassword" class="form-control text-center fw-bold" placeholder="ENTER ADMIN PASSWORD" required>
+                </div>
+                <div class="modal-footer border-0 justify-content-center">
+                    <button type="button" class="btn btn-light fw-bold text-uppercase small" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-danger fw-bold text-uppercase small px-4">Confirm Reset</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @* BOOTSTRAP JS: Required for Modals and Interactivity *@
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+}
